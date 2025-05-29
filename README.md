@@ -9,15 +9,17 @@
     - syntax highlighting
     - code folding
     - indentation
-- **LSP (Language Server Protocol):**  
-  - python (pylsp)
-  - javaScript/typeScript (tsserver)
+- **LSP (Language Server Protocol):** 
+    - go to definition  
+    - python (pylsp)
+    - javaScript/typeScript (ts_ls)
 - **Keymaps:**  
-  - diagnostics navigation
-  - quick access to location list
+    - diagnostics navigation
+    - quick access to location list
 
 ## Structure
 - ~/.config/nvim/
+```
 ├── init.lua
 └── lua/
   ├── core/
@@ -28,3 +30,4 @@
     ├── treesitter.lua
     ├── lspconfig.lua
     └── colorscheme.lua
+```
