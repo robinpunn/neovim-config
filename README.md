@@ -18,7 +18,7 @@
     - quick access to location list
 
 ## Structure
-- ~/.config/nvim/
+`~/.config/nvim/`
 ```
 ├── init.lua
 └── lua/
