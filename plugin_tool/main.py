@@ -1,6 +1,6 @@
 import sys
-from scan import scan_plugins
+from sync import sync_plugins
 
 if __name__ == "__main__":
-    if sys.argv[1] == "scan":
-        scan_plugins()
+    if sys.argv[1] == "sync":
+        sync_plugins()

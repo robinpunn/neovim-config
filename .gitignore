@@ -6,3 +6,4 @@
 .cache/
 undo/
 shada/
+__pycache__/
