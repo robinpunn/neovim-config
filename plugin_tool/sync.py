@@ -1,38 +1,29 @@
 import os
 import json
-import subprocess
+from configparser import ConfigParser
 
 PLUGIN_DIR = os.path.expanduser("~/.local/share/nvim/site/pack/plugins/")
 JSON_FILE = "plugins.json"
 
 
 def get_git_repo_url(plugin_path):
-    try:
-        result = subprocess.run(
-            ["git", "-C", plugin_path, "remote", "get-url", "origin"],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        url = result.stdout.strip()
+    config_path = os.path.join(plugin_path, ".git", "config")
+    if not os.path.isfile(config_path):
+        return None
 
-        if "github.com" not in url:
-            return None
+    parser = ConfigParser()
+    try:
+        parser.read(config_path)
+        url = parser.get('remote "origin"', "url")
 
         if url.startswith("git@github.com:"):
             url = url.replace("git@github.com:", "https://github.com/")
-        elif url.startswith("git@github.com"):
-            url = url.replace("git@github.com", "https://github.com/")
-        elif url.startswith("https://github.com/"):
-            pass
-        else:
-            return None
-
         if url.endswith(".git"):
             url = url[:-4]
-
-        return url.split("github.com/")[1]
-    except subprocess.CalledProcessError:
+        if "github.com/" in url:
+            return url.split("github.com/")[1]
+        return None
+    except Exception:
         return None
 
 

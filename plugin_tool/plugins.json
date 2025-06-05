@@ -20,6 +20,7 @@
   {
     "name": "fugitive",
     "type": "start",
+    "repo": null,
     "build": ":helptags ALL"
   }
 ]
