@@ -1,42 +1,10 @@
 import os
-import json
-from configparser import ConfigParser
-
-CONFIG_DIR = os.path.expanduser("~/.config/nvim/plugin_tool")
-JSON_FILE = os.path.join(CONFIG_DIR, "plugins.json")
-PLUGIN_DIR = os.path.expanduser("~/.local/share/nvim/site/pack/plugins/")
-os.makedirs(CONFIG_DIR, exist_ok=True)
-
-
-def get_git_repo_url(plugin_path):
-    config_path = os.path.join(plugin_path, ".git", "config")
-    if not os.path.isfile(config_path):
-        return None
-
-    parser = ConfigParser()
-    try:
-        parser.read(config_path)
-        url = parser.get('remote "origin"', "url")
-
-        if url.startswith("git@github.com:"):
-            url = url.replace("git@github.com:", "https://github.com/")
-        if url.endswith(".git"):
-            url = url[:-4]
-        if "github.com/" in url:
-            return url.split("github.com/")[1]
-        return None
-    except Exception:
-        return None
+from utils import load_plugins, save_plugins, get_git_repo_url, PLUGIN_DIR
 
 
 def sync_plugins():
-    if os.path.exists(JSON_FILE):
-        with open(JSON_FILE, "r") as f:
-            existing_plugins = json.load(f)
-    else:
-        existing_plugins = []
-
-    plugin_dict = {p["name"]: p for p in existing_plugins}
+    plugins = load_plugins()
+    plugin_dict = {p["name"]: p for p in plugins}
     new_count = 0
     updated_count = 0
 
@@ -71,9 +39,7 @@ def sync_plugins():
                 if updated:
                     updated_count += 1
 
-    with open(JSON_FILE, "w") as f:
-        json.dump(list(plugin_dict.values()), f, indent=2)
-
+    save_plugins(list(plugin_dict.values()))
     print(
         f"Sync complete. {new_count} new, {updated_count} updated plugin(s)"
     )
