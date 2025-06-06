@@ -2,25 +2,21 @@
   {
     "name": "nvim-treesitter",
     "type": "start",
-    "repo": "nvim-treesitter/nvim-treesitter",
-    "build": ":helptags ALL"
+    "repo": "nvim-treesitter/nvim-treesitter"
   },
   {
     "name": "nvim-lspconfig",
     "type": "start",
-    "repo": "neovim/nvim-lspconfig",
-    "build": ":helptags ALL"
+    "repo": "neovim/nvim-lspconfig"
   },
   {
     "name": "tokyonight.nvim",
     "type": "start",
-    "repo": "folke/tokyonight.nvim",
-    "build": ":helptags ALL"
+    "repo": "folke/tokyonight.nvim"
   },
   {
     "name": "fugitive",
     "type": "start",
-    "repo": null,
-    "build": ":helptags ALL"
+    "repo": null
   }
 ]

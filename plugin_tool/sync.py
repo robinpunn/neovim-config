@@ -2,8 +2,10 @@ import os
 import json
 from configparser import ConfigParser
 
+CONFIG_DIR = os.path.expanduser("~/.config/nvim/plugin_tool")
+JSON_FILE = os.path.join(CONFIG_DIR, "plugins.json")
 PLUGIN_DIR = os.path.expanduser("~/.local/share/nvim/site/pack/plugins/")
-JSON_FILE = "plugins.json"
+os.makedirs(CONFIG_DIR, exist_ok=True)
 
 
 def get_git_repo_url(plugin_path):
@@ -25,10 +27,6 @@ def get_git_repo_url(plugin_path):
         return None
     except Exception:
         return None
-
-
-def has_docs_dir(plugin_path):
-    return os.path.isdir(os.path.join(plugin_path, "doc"))
 
 
 def sync_plugins():
@@ -54,7 +52,6 @@ def sync_plugins():
 
             plugin = plugin_dict.get(name)
             repo = get_git_repo_url(plugin_path)
-            build = ":helptags ALL" if has_docs_dir(plugin_path) else None
 
             if plugin is None:
                 plugin_dict[name] = {
@@ -62,16 +59,11 @@ def sync_plugins():
                     "type": plugin_type,
                     "repo": repo,
                 }
-                if build:
-                    plugin_dict[name]["build"] = build
                 new_count += 1
             else:
                 updated = False
                 if "repo" not in plugin and repo:
                     plugin["repo"] = repo
-                    updated = True
-                if "build" not in plugin and build:
-                    plugin["build"] = build
                     updated = True
                 if plugin.get("type") != plugin_type:
                     plugin["type"] = plugin_type
