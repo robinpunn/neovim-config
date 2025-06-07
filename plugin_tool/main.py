@@ -1,13 +1,15 @@
 import argparse
 from sync import sync_plugins
 from edit import edit_plugin
+from clean import cleanup_plugins
 
 
 def main():
     parser = argparse.ArgumentParser(description="Neovim Plugin Manager")
     subparsers = parser.add_subparsers(dest="command")
 
-    subparsers.add_parser("sync", help="Sync plugins from disk to plugins.json")
+    sync_parser = subparsers.add_parser("sync", help="Sync plugins from disk to plugins.json")
+    sync_parser.add_argument("--force", action="store_true")
 
     edit_parser = subparsers.add_parser("edit", help="Edit a plugin in plugins.json")
     edit_parser.add_argument("name", help="Name of the plugin to edit")
@@ -18,19 +20,25 @@ def main():
     edit_parser.add_argument("--clear-tag", action="store_true", help="Remove the tag field")
     edit_parser.add_argument("--clear-branch", action="store_true", help="Remove the branch field")
 
+    cleanup_parser = subparsers.add_parser("clean", help="Remove plugins not found on disk")
+    cleanup_parser.add_argument("--force", action="store_true", help="Skip confirmation prompt")
+    cleanup_parser.add_argument("--dry-run", action="store_true", help="Preview changes without saving")
+
     args = parser.parse_args()
 
     if args.command == "sync":
-        sync_plugins()
+        sync_plugins(force_repo_update=args.force)
     elif args.command == "edit":
-        edit_plugin(args.name,
-                    args.repo,
-                    args.tag,
-                    args.branch,
-                    args.plugin_type,
-                    args.clear_tag,
-                    args.clear_branch
+        edit_plugin(name=args.name,
+                    repo=args.repo,
+                    tag=args.tag,
+                    branch=args.branch,
+                    plugin_type=args.plugin_type,
+                    clear_tag=args.clear_tag,
+                    clear_branch=args.clear_branch
                     )
+    elif args.command == "clean":
+        cleanup_plugins(force=args.force, dry_run=args.dry_run)
     else:
         parser.print_help()
 
