@@ -1,7 +1,14 @@
 from utils import load_plugins, save_plugins
 
 
-def edit_plugin(name, repo=None, tag=None, branch=None, plugin_type=None):
+def edit_plugin(name,
+                repo=None,
+                tag=None,
+                branch=None,
+                plugin_type=None,
+                clear_tag=None,
+                clear_branch=None
+                ):
     plugins = load_plugins()
     found = False
 
@@ -22,6 +29,12 @@ def edit_plugin(name, repo=None, tag=None, branch=None, plugin_type=None):
             if plugin_type in {"start", "opt"}:
                 plugin["type"] = plugin_type
                 print(f"Set type for {name} to {plugin_type}")
+            if clear_tag:
+                plugin.pop("tag", None)
+                print(f"Removed tag from {name}")
+            if clear_branch:
+                plugin.pop("branch", None)
+                print(f"Removed branch from {name}")
             break
 
     if not found:
