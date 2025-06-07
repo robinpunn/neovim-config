@@ -2,7 +2,7 @@ import os
 from utils import load_plugins, save_plugins, get_git_repo_url, PLUGIN_DIR
 
 
-def sync_plugins():
+def sync_plugins(force_repo_update=False):
     plugins = load_plugins()
     plugin_dict = {p["name"]: p for p in plugins}
     new_count = 0
@@ -30,7 +30,10 @@ def sync_plugins():
                 new_count += 1
             else:
                 updated = False
-                if "repo" not in plugin and repo:
+                if force_repo_update:
+                    plugin["repo"] = repo
+                    updated = True
+                elif repo and "repo" not in plugin:
                     plugin["repo"] = repo
                     updated = True
                 if plugin.get("type") != plugin_type:
