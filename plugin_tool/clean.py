@@ -4,7 +4,6 @@ from utils import load_plugins, save_plugins, get_existing_plugins_by_type
 def cleanup_plugins(force=False, dry_run=False):
     plugins = load_plugins()
     existing_names = {p["name"] for p in get_existing_plugins_by_type()}
-    original_count = len(plugins)
 
     to_remove = [
         plugin for plugin in plugins

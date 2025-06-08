@@ -9,7 +9,7 @@ PLUGIN_DIR = os.path.expanduser("~/.local/share/nvim/site/pack/plugins/")
 
 def load_plugins():
     if not os.path.exists(JSON_FILE):
-        print("No plugins found")
+        print("No plugins found in plugins.json")
         return []
     with open(JSON_FILE, "r") as f:
         return json.load(f)
@@ -57,3 +57,7 @@ def get_existing_plugins_by_type():
                     "path": full_path
                 })
     return found
+
+
+def plugin_exists_in_json(plugins, name):
+    return any(p["name"] == name for p in plugins)

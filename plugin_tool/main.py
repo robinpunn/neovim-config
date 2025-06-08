@@ -2,11 +2,18 @@ import argparse
 from sync import sync_plugins
 from edit import edit_plugin
 from clean import cleanup_plugins
+from add import add_plugin
 
 
 def main():
     parser = argparse.ArgumentParser(description="Neovim Plugin Manager")
     subparsers = parser.add_subparsers(dest="command")
+
+    add_parser = subparsers.add_parser("add", help="Add an entry to 'plugins.json' to be installed")
+    add_parser.add_argument("repo", help="Plugin in the format 'author/name'")
+    add_parser.add_argument("--tag", help="Optional tag")
+    add_parser.add_argument("--branch", help="Optional branch")
+    add_parser.add_argument("--plugin-type", choices=["start","opt"], default="start")
 
     sync_parser = subparsers.add_parser("sync", help="Sync plugins from disk to plugins.json")
     sync_parser.add_argument("--force", action="store_true")
@@ -26,7 +33,13 @@ def main():
 
     args = parser.parse_args()
 
-    if args.command == "sync":
+    if args.command == "add":
+        add_plugin(identifier=args.repo,
+                   tag=args.tag,
+                   branch=args.branch,
+                   plugin_type=args.plugin_type
+                   )
+    elif args.command == "sync":
         sync_plugins(force_repo_update=args.force)
     elif args.command == "edit":
         edit_plugin(name=args.name,
