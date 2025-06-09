@@ -1,14 +1,9 @@
-from utils import load_plugins, save_plugins, get_existing_plugins_by_type
+from utils import load_plugins, save_plugins, get_orphaned_plugins
 
 
 def cleanup_plugins(force=False, dry_run=False):
-    plugins = load_plugins()
-    existing_names = {p["name"] for p in get_existing_plugins_by_type()}
-
-    to_remove = [
-        plugin for plugin in plugins
-        if plugin["name"] not in existing_names
-    ]
+    all_plugins = load_plugins()
+    to_remove, existing_names = get_orphaned_plugins(all_plugins)
     removed_count = len(to_remove)
 
     if removed_count == 0:
@@ -29,9 +24,7 @@ def cleanup_plugins(force=False, dry_run=False):
             print("Cleanup aborted")
             return
 
-    cleaned_plugins = [
-        plugin for plugin in plugins
-        if plugin["name"] in existing_names
-    ]
+    cleaned_plugins = [p for p in all_plugins if p["name"] in existing_names]
+
     save_plugins(cleaned_plugins)
     print(f"Removed {removed_count} orphaned plugins(s) from plugins.json.")

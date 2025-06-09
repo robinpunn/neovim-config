@@ -59,5 +59,17 @@ def get_existing_plugins_by_type():
     return found
 
 
+def get_orphaned_plugins(plugins=None):
+    if plugins is None:
+        plugins = load_plugins()
+    existing_names = {p["name"] for p in get_existing_plugins_by_type()}
+    orphaned_plugins = [
+        plugin for plugin in plugins
+        if plugin["name"] not in existing_names
+    ]
+
+    return orphaned_plugins, existing_names
+
+
 def plugin_exists_in_json(plugins, name):
     return any(p["name"] == name for p in plugins)
