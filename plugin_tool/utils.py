@@ -1,10 +1,14 @@
 import os
 import json
+import subprocess
 from configparser import ConfigParser
 
+HOME = os.path.expanduser("~")
 CONFIG_DIR = os.path.expanduser("~/.config/nvim/plugin_tool")
-JSON_FILE = os.path.join(CONFIG_DIR, "plugins.json")
 PLUGIN_DIR = os.path.expanduser("~/.local/share/nvim/site/pack/plugins/")
+LUA_PLUGINS_DIR = os.path.join(HOME, ".config", "nvim", "lua", "plugins")
+INIT_LUA_PATH = os.path.join(HOME, ".config", "nvim", "init.lua")
+JSON_FILE = os.path.join(CONFIG_DIR, "plugins.json")
 
 
 def load_plugins():
@@ -71,5 +75,31 @@ def get_orphaned_plugins(plugins=None):
     return orphaned_plugins, existing_names
 
 
+def filter_plugins_by_name(plugins, names):
+    return [p for p in plugins if p["name"] in names]
+
+
 def plugin_exists_in_json(plugins, name):
     return any(p["name"] == name for p in plugins)
+
+
+def run_build_steps(plugin, cwd=None):
+    build_steps = plugin.get("build")
+    if not build_steps:
+        return
+
+    if isinstance(build_steps, str):
+        build_steps = [build_steps]
+
+    for step in build_steps:
+        step = step.strip()
+        if step.startswith(":"):
+            print(f"Running Neovim command '{step}' for {plugin['name']}...")
+            subprocess.run(
+                ["nvim", "--headless", "+silent", step, "+quit"],
+                cwd=cwd or ".",
+                check=True
+            )
+        else:
+            print(f"Running shell command '{step}' for {plugin['name']}...")
+            subprocess.run(step, shell=True, cwd=cwd or ".", check=True)

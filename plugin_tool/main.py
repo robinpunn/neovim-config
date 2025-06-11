@@ -1,8 +1,10 @@
 import argparse
+from add import add_plugin
+from install import install_plugins, install_single_plugin
 from sync import sync_plugins
 from edit import edit_plugin
 from clean import cleanup_plugins
-from add import add_plugin
+
 
 
 def main():
@@ -11,9 +13,16 @@ def main():
 
     add_parser = subparsers.add_parser("add", help="Add an entry to 'plugins.json' to be installed")
     add_parser.add_argument("repo", help="Plugin in the format 'author/name'")
+    add_parser.add_argument("--install", action="store_true", help="Install plugin")
+    add_parser.add_argument("--plugin-type", choices=["start","opt"], default="start")
     add_parser.add_argument("--tag", help="Optional tag")
     add_parser.add_argument("--branch", help="Optional branch")
-    add_parser.add_argument("--plugin-type", choices=["start","opt"], default="start")
+    add_parser.add_argument("--build", nargs="+", help="Post install build step(s)")
+
+    install_parser = subparsers.add_parser("install", help="Install plugin(s) in plugins.json with confirmation for each plugin")
+    install_parser.add_argument("names", nargs="+", help="Install specific plugin(s)")
+    install_parser.add_argument("--force", action="store_true", help="Install all orphaned plugins without confirmation")
+    install_parser.add_argument("--dry-run", action="stor_true", help="Show plugin(s) to be installed")
 
     sync_parser = subparsers.add_parser("sync", help="Sync plugins from disk to plugins.json")
     sync_parser.add_argument("--force", action="store_true")
@@ -21,11 +30,15 @@ def main():
     edit_parser = subparsers.add_parser("edit", help="Edit a plugin in plugins.json")
     edit_parser.add_argument("name", help="Name of the plugin to edit")
     edit_parser.add_argument("--repo", help="New repu URL")
-    edit_parser.add_argument("--tag", help="Tag to use")
-    edit_parser.add_argument("--branch", help="Branch to use")
     edit_parser.add_argument("--plugin-type", choices=["start", "opt"], help="Lazy load?")
+    edit_parser.add_argument("--tag", help="Tag to use")
+    edit_parser.add_argument("--branch", nargs="+", help="Branch to use")
+    edit_parser.add_argument("--build", nargs="+", help="Build step(s) after install")
+    edit_parser.add_argument("--add-build", nargs="+", help="Build step(s) after install")
+    edit_parser.add_argument("--remove-build", nargs="+", help="Build step(s) after install")
     edit_parser.add_argument("--clear-tag", action="store_true", help="Remove the tag field")
     edit_parser.add_argument("--clear-branch", action="store_true", help="Remove the branch field")
+    edit_parser.add_argument("--clear-build", action="store_true", help="Remove build step(s)")
 
     cleanup_parser = subparsers.add_parser("clean", help="Remove plugins not found on disk")
     cleanup_parser.add_argument("--force", action="store_true", help="Skip confirmation prompt")
@@ -34,22 +47,39 @@ def main():
     args = parser.parse_args()
 
     if args.command == "add":
-        add_plugin(identifier=args.repo,
-                   tag=args.tag,
-                   branch=args.branch,
-                   plugin_type=args.plugin_type
-                   )
+        plugin = add_plugin(
+            identifier=args.repo,
+            plugin_type=args.plugin_type,
+            tag=args.tag,
+            branch=args.branch,
+            build=args.build
+        )
+        if args.install and plugin:
+            success = install_single_plugin(plugin)
+            if success:
+                print(f"Installed {plugin['name']} after adding.")
+    elif args.command == "install":
+        install_plugins(
+            names=args.names,
+            force=args.force,
+            dry_run=args.dry_run,
+        )
     elif args.command == "sync":
         sync_plugins(force_repo_update=args.force)
     elif args.command == "edit":
-        edit_plugin(name=args.name,
-                    repo=args.repo,
-                    tag=args.tag,
-                    branch=args.branch,
-                    plugin_type=args.plugin_type,
-                    clear_tag=args.clear_tag,
-                    clear_branch=args.clear_branch
-                    )
+        edit_plugin(
+            name=args.name,
+            repo=args.repo,
+            plugin_type=args.plugin_type,
+            tag=args.tag,
+            branch=args.branch,
+            build=args.build,
+            add_build=args.add_build,
+            remove_build=args.remove_build,
+            clear_tag=args.clear_tag,
+            clear_branch=args.clear_branch,
+            clear_build=args.clear_build
+        )
     elif args.command == "clean":
         cleanup_plugins(force=args.force, dry_run=args.dry_run)
     else:

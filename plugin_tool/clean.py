@@ -1,4 +1,9 @@
-from utils import load_plugins, save_plugins, get_orphaned_plugins
+from utils import (
+    load_plugins,
+    save_plugins,
+    get_orphaned_plugins,
+    filter_plugins_by_name
+)
 
 
 def cleanup_plugins(force=False, dry_run=False):
@@ -24,7 +29,7 @@ def cleanup_plugins(force=False, dry_run=False):
             print("Cleanup aborted")
             return
 
-    cleaned_plugins = [p for p in all_plugins if p["name"] in existing_names]
+    cleaned_plugins = filter_plugins_by_name(all_plugins, existing_names)
 
     save_plugins(cleaned_plugins)
-    print(f"Removed {removed_count} orphaned plugins(s) from plugins.json.")
+    print(f"Removed {removed_count} orphaned plugin(s) from plugins.json.")
