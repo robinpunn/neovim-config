@@ -4,10 +4,12 @@ import subprocess
 from configparser import ConfigParser
 
 HOME = os.path.expanduser("~")
-CONFIG_DIR = os.path.expanduser("~/.config/nvim/plugin_tool")
-PLUGIN_DIR = os.path.expanduser("~/.local/share/nvim/site/pack/plugins/")
+PLUGIN_DIR = os.path.join(HOME, ".local", "share", "nvim", "site", "pack", "plugins")
+CONFIG_DIR = os.path.join(HOME, ".config", "nvim", "plugin_tool")
+BACKUP_DIR = os.path.join(CONFIG_DIR, "backups")
 LUA_PLUGINS_DIR = os.path.join(HOME, ".config", "nvim", "lua", "plugins")
-INIT_LUA_PATH = os.path.join(HOME, ".config", "nvim", "init.lua")
+LUA_PLUGINS_CORE_DIR = os.path.join(HOME, ".config", "nvim", "lua", "core")
+INIT_LUA_FILE = os.path.join(HOME, ".config", "nvim", "init.lua")
 JSON_FILE = os.path.join(CONFIG_DIR, "plugins.json")
 
 

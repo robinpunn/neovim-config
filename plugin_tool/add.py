@@ -37,6 +37,7 @@ def add_plugin(identifier, plugin_type="start", tag=None, branch=None, build=Non
 
     if tag and branch:
         print("Error: you can't have both a tag and a branch")
+        return
 
     name = repo.split("/")[-1]
 

@@ -4,6 +4,7 @@ from install import install_plugins, install_single_plugin
 from sync import sync_plugins
 from edit import edit_plugin
 from clean import cleanup_plugins
+from backup import create_backup
 
 
 
@@ -22,7 +23,7 @@ def main():
     install_parser = subparsers.add_parser("install", help="Install plugin(s) in plugins.json with confirmation for each plugin")
     install_parser.add_argument("names", nargs="+", help="Install specific plugin(s)")
     install_parser.add_argument("--force", action="store_true", help="Install all orphaned plugins without confirmation")
-    install_parser.add_argument("--dry-run", action="stor_true", help="Show plugin(s) to be installed")
+    install_parser.add_argument("--dry-run", action="store_true", help="Show plugin(s) to be installed")
 
     sync_parser = subparsers.add_parser("sync", help="Sync plugins from disk to plugins.json")
     sync_parser.add_argument("--force", action="store_true")
@@ -43,6 +44,8 @@ def main():
     cleanup_parser = subparsers.add_parser("clean", help="Remove plugins not found on disk")
     cleanup_parser.add_argument("--force", action="store_true", help="Skip confirmation prompt")
     cleanup_parser.add_argument("--dry-run", action="store_true", help="Preview changes without saving")
+
+    backup_parser = subparsers.add_parser("backup", help="Create backup of plugin config files")
 
     args = parser.parse_args()
 
@@ -82,6 +85,8 @@ def main():
         )
     elif args.command == "clean":
         cleanup_plugins(force=args.force, dry_run=args.dry_run)
+    elif args.command == "backup":
+        create_backup()
     else:
         parser.print_help()
 

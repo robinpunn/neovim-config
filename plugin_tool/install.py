@@ -3,7 +3,9 @@ from utils import (
     get_orphaned_plugins,
     filter_plugins_by_name,
     run_build_steps,
-    PLUGIN_DIR
+    PLUGIN_DIR,
+    LUA_PLUGINS_DIR,
+    INIT_LUA_FILE
 )
 import subprocess
 import os
@@ -61,18 +63,16 @@ def install_single_plugin(plugin):
 
         run_build_steps(plugin, cwd=target_dir)
 
-        config_dir = os.path.expanduser("~/.config/nvim/lua/plugins")
-        os.makedirs(config_dir, exist_ok=True)
-        config_path = os.path.join(config_dir, f"{name}.lua")
+        os.makedirs(LUA_PLUGINS_DIR, exist_ok=True)
+        config_path = os.path.join(LUA_PLUGINS_DIR, f"{name}.lua")
 
         if not os.path.exists(config_path):
             with open(config_path, "w") as f:
                 f.write(f"-- Config for {name}\n")
 
-        init_path = os.path.expanduser("~/.config/nvim/init.lua")
         require_line = f'require("plugins.{name}")'
 
-        with open(init_path, "a+") as f:
+        with open(INIT_LUA_FILE, "a+") as f:
             f.seek(0)
             contents = f.read()
             if require_line not in contents:
