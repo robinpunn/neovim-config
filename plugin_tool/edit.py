@@ -1,18 +1,19 @@
 from utils import load_plugins, save_plugins
 
 
-def edit_plugin(name,
-                repo=None,
-                plugin_type=None,
-                tag=None,
-                branch=None,
-                build=None,
-                add_build=None,
-                remove_build=None,
-                clear_tag=None,
-                clear_branch=None,
-                clear_build=None
-                ):
+def edit_plugin(
+    name,
+    repo=None,
+    plugin_type=None,
+    tag=None,
+    branch=None,
+    build=None,
+    add_build=None,
+    remove_build=None,
+    clear_tag=None,
+    clear_branch=None,
+    clear_build=None
+):
     plugins = load_plugins()
     found = False
 

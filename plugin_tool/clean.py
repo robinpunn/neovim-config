@@ -2,7 +2,8 @@ from utils import (
     load_plugins,
     save_plugins,
     get_orphaned_plugins,
-    filter_plugins_by_name
+    filter_plugins_by_name,
+    prompt_yes_no
 )
 
 
@@ -24,8 +25,7 @@ def cleanup_plugins(force=False, dry_run=False):
         return
 
     if not force:
-        confirm = input("Remove them from plugins.json? (y/n): ").strip().lower()
-        if confirm != "y":
+        if not prompt_yes_no("Remove them from plugins.json? (y/n): "):
             print("Cleanup aborted")
             return
 

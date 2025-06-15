@@ -4,8 +4,7 @@ from install import install_plugins, install_single_plugin
 from sync import sync_plugins
 from edit import edit_plugin
 from clean import cleanup_plugins
-from backup import create_backup
-
+from backup import create_backup, clear_backups
 
 
 def main():
@@ -30,7 +29,7 @@ def main():
 
     edit_parser = subparsers.add_parser("edit", help="Edit a plugin in plugins.json")
     edit_parser.add_argument("name", help="Name of the plugin to edit")
-    edit_parser.add_argument("--repo", help="New repu URL")
+    edit_parser.add_argument("--repo", help="New repo URL")
     edit_parser.add_argument("--plugin-type", choices=["start", "opt"], help="Lazy load?")
     edit_parser.add_argument("--tag", help="Tag to use")
     edit_parser.add_argument("--branch", nargs="+", help="Branch to use")
@@ -46,6 +45,13 @@ def main():
     cleanup_parser.add_argument("--dry-run", action="store_true", help="Preview changes without saving")
 
     backup_parser = subparsers.add_parser("backup", help="Create backup of plugin config files")
+    backup_parser.add_argument("--init", action="store_true", help="Backup init.lua")
+    backup_parser.add_argument("--json", action="store_true", help="Backup plugins.json")
+    backup_parser.add_argument("--plugins", action="store_true", help="Backup lua/plugins")
+    backup_parser.add_argument("--core", action="store_true", help="Backup lua/core")
+
+    clear_parser = subparsers.add_parser("clear-backups", help="Delete backup directory")
+    clear_parser.add_argument("--force", action="store_true", help="Delete backup directory without confirmation")
 
     args = parser.parse_args()
 
@@ -86,7 +92,17 @@ def main():
     elif args.command == "clean":
         cleanup_plugins(force=args.force, dry_run=args.dry_run)
     elif args.command == "backup":
-        create_backup()
+        if not (args.init or args.json or args.plugins or args.core):
+            create_backup()
+        else:
+            create_backup(
+                include_init=args.init,
+                include_json=args.json,
+                include_plugins=args.plugins,
+                include_core=args.core,
+            )
+    elif args.command == "clear-backups":
+        clear_backups(force=args.force)
     else:
         parser.print_help()
 

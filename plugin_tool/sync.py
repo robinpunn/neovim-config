@@ -1,4 +1,9 @@
-from utils import load_plugins, save_plugins, get_git_repo_url, get_existing_plugins_by_type
+from utils import (
+    load_plugins,
+    save_plugins,
+    get_git_repo_url,
+    get_existing_plugins_by_type
+)
 
 
 def sync_plugins(force_repo_update=False):

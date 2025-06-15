@@ -14,17 +14,33 @@ JSON_FILE = os.path.join(CONFIG_DIR, "plugins.json")
 
 
 def load_plugins():
-    if not os.path.exists(JSON_FILE):
-        print("No plugins found in plugins.json")
+    try:
+        if not os.path.exists(JSON_FILE):
+            print("No plugins found in plugins.json")
+            return []
+        with open(JSON_FILE, "r") as f:
+            return json.load(f)
+    except (IOError, json.JSONDecodeError) as e:
+        print(f"❌ Failed to load plugins: {e}")
         return []
-    with open(JSON_FILE, "r") as f:
-        return json.load(f)
 
 
 def save_plugins(plugins):
-    os.makedirs(CONFIG_DIR, exist_ok=True)
-    with open(JSON_FILE, "w") as f:
-        json.dump(plugins, f, indent=2)
+    try:
+        os.makedirs(CONFIG_DIR, exist_ok=True)
+        with open(JSON_FILE, "w") as f:
+            json.dump(plugins, f, indent=2)
+        return True
+    except (IOError, OSError) as e:
+        print(f"❌ Failed to save plugins.json: {e}")
+        return False
+
+
+def check_if_repo_dir_exists(directory, name):
+    if os.path.exists(directory):
+        print(f"{name} already exists at {directory}")
+        return True
+    return False
 
 
 def get_git_repo_url(plugin_path):
@@ -44,7 +60,8 @@ def get_git_repo_url(plugin_path):
         if "github.com/" in url:
             return url.split("github.com/")[1]
         return None
-    except Exception:
+    except Exception as e:
+        print(f"❌ Failed to read git config for {plugin_path}: {e}")
         return None
 
 
@@ -85,23 +102,12 @@ def plugin_exists_in_json(plugins, name):
     return any(p["name"] == name for p in plugins)
 
 
-def run_build_steps(plugin, cwd=None):
-    build_steps = plugin.get("build")
-    if not build_steps:
-        return
-
-    if isinstance(build_steps, str):
-        build_steps = [build_steps]
-
-    for step in build_steps:
-        step = step.strip()
-        if step.startswith(":"):
-            print(f"Running Neovim command '{step}' for {plugin['name']}...")
-            subprocess.run(
-                ["nvim", "--headless", "+silent", step, "+quit"],
-                cwd=cwd or ".",
-                check=True
-            )
+def prompt_yes_no(question):
+    while True:
+        reply = input(f"{question} [y/n]: ").strip().lower()
+        if reply in ("y", "yes"):
+            return True
+        elif reply in ("n", "no"):
+            return False
         else:
-            print(f"Running shell command '{step}' for {plugin['name']}...")
-            subprocess.run(step, shell=True, cwd=cwd or ".", check=True)
+            print("Please enter 'y' or 'n'.")
