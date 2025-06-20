@@ -109,12 +109,9 @@ def clear_backups(force=False):
         print("No backups found.")
         return
 
-    if not force:
-        if not prompt_yes_no("Are you sure you want to delete all backups? (y/n): "):
-            return
-
-    try:
-        shutil.rmtree(BACKUP_DIR)
-        print("🗑️ All backups deleted")
-    except Exception as e:
-        print(f"❌ Failed to delete backups: {e}")
+    if force or prompt_yes_no("Are you sure you want to delete all backups? (y/n): "):
+        try:
+            shutil.rmtree(BACKUP_DIR)
+            print("🗑️ All backups deleted")
+        except Exception as e:
+            print(f"❌ Failed to delete backups: {e}")
