@@ -1,6 +1,7 @@
 from utils import (
     load_plugins,
     get_orphaned_plugins,
+    normalize_plugin_name,
     filter_plugins_by_name,
     check_if_repo_dir_exists,
     prompt_yes_no,
@@ -119,11 +120,12 @@ def run_build_steps(plugin, cwd=None):
 def create_lua_file(directory, plugin_name):
     try:
         os.makedirs(directory, exist_ok=True)
-        config_path = os.path.join(directory, f"{plugin_name}.lua")
+        normalized = normalize_plugin_name(plugin_name)
+        config_path = os.path.join(directory, f"{normalized}.lua")
 
         if not os.path.exists(config_path):
             with open(config_path, "w") as f:
-                f.write(f"-- Config for {plugin_name}\n")
+                f.write(f"-- Config for {plugin_name} created as {normalized}.lua\n")
         return True
     except subprocess.CalledProcessError as e:
         print(f"❌ Failed to create config file for {plugin_name}: {e}")
@@ -131,13 +133,14 @@ def create_lua_file(directory, plugin_name):
 
 
 def add_to_init_lua(init_lua, name):
-    require_line = f'require("plugins.{name}")'
+    normalized = normalize_plugin_name(name)
+    require_line = f'require("plugins.{normalized}")'
     try:
         with open(init_lua, "a+") as f:
             f.seek(0)
             contents = f.read()
             if require_line not in contents:
-                f.write(f"\n{require_line}\n")
+                f.write(f"{require_line}\n")
         return True
     except subprocess.CalledProcessError as e:
         print(f"❌ Failed to update init.lua for {name}: {e}")

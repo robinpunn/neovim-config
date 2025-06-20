@@ -1,6 +1,6 @@
 import os
 import json
-import subprocess
+import re
 from configparser import ConfigParser
 
 HOME = os.path.expanduser("~")
@@ -94,8 +94,78 @@ def get_orphaned_plugins(plugins=None):
     return orphaned_plugins, existing_names
 
 
+def normalize_plugin_name(name):
+    if name.endswith(".nvim"):
+        return name.replace(".nvim", "")
+    return name
+
+
 def filter_plugins_by_name(plugins, names):
-    return [p for p in plugins if p["name"] in names]
+    normalized_targets = [normalize_plugin_name(n) for n in names]
+    result = []
+    for plugin in plugins:
+        normalized_plugin_name = normalize_plugin_name(plugin["name"])
+        if normalized_plugin_name in normalized_targets:
+            result.append(plugin)
+    return result
+
+
+def extract_require_names_from_init():
+    if not os.path.isfile(INIT_LUA_FILE):
+        return []
+
+    pattern = re.compile(r'require\(["\']plugins\.([^"\']+)["\']\)')
+    names = []
+
+    with open(INIT_LUA_FILE, "r") as f:
+        for line in f:
+            match = pattern.search(line)
+            if match:
+                names.append(match.group(1))
+    return names
+
+
+def extract_lua_plugin_names(dir_path):
+    if not os.path.isdir(dir_path):
+        return []
+
+    files = os.listdir(dir_path)
+    lua_files = [os.path.splitext(f)[0] for f in files if f.endswith(".lua")]
+    return lua_files
+
+
+def extract_all_lua_plugin_names():
+    plugins = extract_lua_plugin_names(LUA_PLUGINS_DIR)
+    core = extract_lua_plugin_names(LUA_PLUGINS_CORE_DIR)
+    return list(set(plugins + core))
+
+
+def resolve_plugin_sources(name):
+    normalized = normalize_plugin_name(name)
+
+    plugins = load_plugins()
+    json_entry = next((p for p in plugins if normalize_plugin_name(p["name"]) == normalized), None)
+
+    repo_info = None
+    for plugin_type in ["start", "opt"]:
+        path = os.path.join(PLUGIN_DIR, plugin_type, name)
+        if os.path.isdir(path):
+            repo_info = {'type': plugin_type, "path":path}
+            break
+
+    config_path = os.path.join(LUA_PLUGINS_DIR, f"{normalized}.lua")
+    config_exists = os.path.isfile(config_path)
+
+    requires = extract_require_names_from_init()
+    require_exists = normalized in requires
+
+    return {
+        "name": name,
+        "json": json_entry,
+        "repo": repo_info,
+        "config_exists": config_exists,
+        "require_exists": require_exists
+    }
 
 
 def plugin_exists_in_json(plugins, name):

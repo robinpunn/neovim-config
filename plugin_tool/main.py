@@ -21,7 +21,7 @@ def main():
     add_parser.add_argument("--build", nargs="+", help="Post install build step(s)")
 
     install_parser = subparsers.add_parser("install", help="Install plugin(s) in plugins.json with confirmation for each plugin")
-    install_parser.add_argument("names", nargs="+", help="Install specific plugin(s)")
+    install_parser.add_argument("names", nargs="*", help="Install specific plugin(s)")
     install_parser.add_argument("--force", action="store_true", help="Install all orphaned plugins without confirmation")
     install_parser.add_argument("--dry-run", action="store_true", help="Show plugin(s) to be installed")
 
