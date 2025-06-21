@@ -6,11 +6,12 @@ from configparser import ConfigParser
 HOME = os.path.expanduser("~")
 PLUGIN_DIR = os.path.join(HOME, ".local", "share", "nvim", "site", "pack", "plugins")
 CONFIG_DIR = os.path.join(HOME, ".config", "nvim", "plugin_tool")
-BACKUP_DIR = os.path.join(CONFIG_DIR, "backups")
+CONFIG_PARENT = os.path.dirname(CONFIG_DIR)
+BACKUP_DIR = os.path.join(CONFIG_PARENT, "backups")
 LUA_PLUGINS_DIR = os.path.join(HOME, ".config", "nvim", "lua", "plugins")
 LUA_PLUGINS_CORE_DIR = os.path.join(HOME, ".config", "nvim", "lua", "core")
 INIT_LUA_FILE = os.path.join(HOME, ".config", "nvim", "init.lua")
-JSON_FILE = os.path.join(CONFIG_DIR, "plugins.json")
+JSON_FILE = os.path.join(CONFIG_PARENT, "plugins.json")
 
 
 def log_action(action, plugin_name=None, status="in-progress"):
