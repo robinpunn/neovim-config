@@ -13,6 +13,22 @@ INIT_LUA_FILE = os.path.join(HOME, ".config", "nvim", "init.lua")
 JSON_FILE = os.path.join(CONFIG_DIR, "plugins.json")
 
 
+def log_action(action, plugin_name=None, status="in-progress"):
+    status_icons = {
+        "in-progress": "🔄",
+        "success": "✅",
+        "skipped": "⏭️",
+        "fail": "❌",
+        "info": "ℹ️"
+    }
+
+    prefix = status_icons.get(status, "")
+    if plugin_name:
+        print(f"{prefix} [{plugin_name}] {action}")
+    else:
+        print(f"{prefix} {action}")
+
+
 def load_plugins():
     try:
         if not os.path.exists(JSON_FILE):
