@@ -1,0 +1,1 @@
+-- Config for vim-fugitive created as vim-fugitive.lua

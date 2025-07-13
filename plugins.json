@@ -10,9 +10,9 @@
     "repo": "neovim/nvim-lspconfig"
   },
   {
-    "name": "fugitive",
+    "name": "vim-fugitive",
     "type": "start",
-    "repo": null
+    "repo": "tpope/vim-fugitive"
   },
   {
     "name": "tokyonight.nvim",

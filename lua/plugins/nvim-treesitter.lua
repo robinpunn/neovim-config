@@ -1,0 +1,1 @@
+-- Config for nvim-treesitter created as nvim-treesitter.lua
