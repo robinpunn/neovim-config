@@ -1,6 +1,3 @@
 require("core.options")
 require("core.keymaps")
 require("core.autocmds")
-require("plugins.treesitter")
-require("plugins.nvim-lspconfig")
-require("plugins.tokyonight")
