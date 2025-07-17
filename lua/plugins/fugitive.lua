@@ -1,8 +1,8 @@
 return {
   "tpope/vim-fugitive",
-  cmd = { "Git" },  -- lazy-load on :Git command
+  cmd = { "G" },  -- lazy-load on :Git command
   keys = {
-    { "<leader>gs", "<cmd>Git<cr>", desc = "Git status" },
+    { "<leader>gs", "<cmd>G<cr>", desc = "Git status" },
   },
 }
 
