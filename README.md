@@ -13,6 +13,10 @@
     - go to definition  
     - python (pylsp)
     - javaScript/typeScript (ts_ls)
+- **Fugitive**
+    - lazy load on `<leader>gs` or `<cmd>G`
+- **Telescope**
+    - fzf
 - **Keymaps:**  
     - diagnostics navigation
     - quick access to location list
@@ -22,6 +26,8 @@
 ```
 ├── init.lua
 └── lua/
+  ├── config/
+  │ └── lazy.lua
   ├── core/
   │ ├── options.lua 
   │ ├── keymaps.lua 
@@ -29,5 +35,7 @@
   └── plugins/
     ├── treesitter.lua
     ├── lspconfig.lua
-    └── colorscheme.lua
+    ├── fugitive.lua
+    ├── telescope.lua
+    └── tokyonight.lua
 ```
