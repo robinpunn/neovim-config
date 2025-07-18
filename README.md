@@ -13,6 +13,12 @@
     - go to definition  
     - python (pylsp)
     - javaScript/typeScript (ts_ls)
+- **Nvm-Cmp (auto-complete):**
+    - cmp-buffer (buffer words)
+    - cmp-path (file system paths)
+    - cmp-nvim-lsp (neovim built in language server)
+    - LuaSnip (snippet engine)
+    - friendly-snippets (preconfigured snippets for different languages)
 - **Fugitive**
     - lazy load on `<leader>gs` or `<cmd>G`
 - **Telescope**
@@ -34,8 +40,9 @@
   │ └── autocmds.lua 
   └── plugins/
     ├── treesitter.lua
-    ├── lspconfig.lua
+    ├── lsp.lua
     ├── fugitive.lua
     ├── telescope.lua
+    ├── cmp.lua
     └── tokyonight.lua
 ```
