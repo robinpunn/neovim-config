@@ -12,3 +12,7 @@ vim.keymap.set('n', '<leader>q', function()
 	vim.diagnostic.setloclist()
 	vim.cmd("lopen")
 end)
+
+-- Oil
+vim.keymap.set("n", "<leader>o", "<cmd>Oil<cr>", { desc = "Open Oil file explorer" })
+vim.keymap.set("n", "<leader>O", function() require("oil").open_float(".") end, { desc = "Open Oil (float)" })
