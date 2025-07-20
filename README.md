@@ -23,6 +23,8 @@
     - lazy load on `<leader>gs` or `<cmd>G`
 - **Telescope**
     - fzf
+- **Oil**
+    - web devicons  
 - **Keymaps:**  
     - diagnostics navigation
     - quick access to location list
@@ -40,9 +42,10 @@
   │ └── autocmds.lua 
   └── plugins/
     ├── treesitter.lua
-    ├── lsp.lua
-    ├── fugitive.lua
-    ├── telescope.lua
+    ├── lsp.lua 
     ├── cmp.lua
+    ├── oil.lua
+    ├── telescope.lua
+    ├── fugitive.lua
     └── tokyonight.lua
 ```
