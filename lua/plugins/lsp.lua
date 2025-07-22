@@ -23,7 +23,17 @@ return {
       on_attach = on_attach,
       capabilities=capabilities
     })
+    -- Go LSP (gopls)
+    lspconfig.gopls.setup({
+      on_attach = on_attach,
+      capabilities = capabilities,
+    })
 
+    -- Go linting (golangci-lint) 
+    lspconfig.golangci_lint_ls.setup({
+      on_attach = on_attach,
+      capabilities = capabilities,
+    })
     -- HTML LSP
     lspconfig.html.setup({
       on_attach = on_attach,
